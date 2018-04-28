@@ -13,6 +13,7 @@ angular.module('todomvc')
 
 		$scope.newTodo = '';
 		$scope.editedTodo = null;
+		$scope.latest = false;
 
 		$scope.$watch('todos', function () {
 			$scope.remainingCount = $filter('filter')(todos, { completed: false }).length;
@@ -31,7 +32,10 @@ angular.module('todomvc')
 		$scope.addTodo = function () {
 			var newTodo = {
 				title: $scope.newTodo.trim(),
-				completed: false
+				completed: false,
+				addedTime:new Date(),
+				completedTime:'',
+				lastCompleted:null,
 			};
 
 			if (!newTodo.title) {
@@ -45,6 +49,7 @@ angular.module('todomvc')
 				})
 				.finally(function () {
 					$scope.saving = false;
+					$scope.latest = true;
 				});
 		};
 
@@ -105,7 +110,25 @@ angular.module('todomvc')
 			if (angular.isDefined(completed)) {
 				todo.completed = completed;
 			}
-			store.put(todo, todos.indexOf(todo))
+			todo.completedTime = todo.completed ? new Date() : '';
+			let index= todos.indexOf(todo)
+			//Condition to incerement the count only if the todo is completed
+			if(todo.completedTime!=''){
+				todos[index].lastCompleted = 0; //initialize the current completed item to zero
+				todos.forEach(function (todoItem) {
+					if(todoItem.lastCompleted!=null){
+						todoItem.lastCompleted=todoItem.lastCompleted+1; //Incremenet all value's so the count whihc ever is 1 2 and 3 are considered as last completed task
+					}
+				});
+			}else{
+				todos.forEach(function (todoItem) {
+					if(todoItem.lastCompleted>todos[index].lastCompleted){
+						todoItem.lastCompleted--;  //Decrement all value's whihc is higher than the current value so the count whihc ever is 1 2 and 3 are considered as last completed task
+					}
+				});
+				todos[index].lastCompleted = null;
+			}
+			store.put(todo, index)
 				.then(function success() {}, function error() {
 					todo.completed = !todo.completed;
 				});
