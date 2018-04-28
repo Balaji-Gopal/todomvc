@@ -26,7 +26,7 @@
 						<li ng-repeat="todo in todos | filter:statusFilter track by $index" ng-class="{completed: todo.completed, editing: todo == editedTodo}">
 							<div class="view">
 								<input class="toggle" type="checkbox" ng-model="todo.completed" ng-change="toggleCompleted(todo)">
-								<label class="custom-lable" ng-class="{'change-color':$last && latest, 'color-green': todo.lastCompleted == 1,'color-magenta': todo.lastCompleted == 2, 'color-yellow': todo.lastCompleted == 3}" ng-dblclick="editTodo(todo)">{{todo.title}}-{{todo.lastCompleted}}</label>
+								<label class="custom-lable" ng-class="{'change-color':$last && latest, 'color-green': todo.lastCompleted == 1,'color-magenta': todo.lastCompleted == 2, 'color-yellow': todo.lastCompleted == 3}" ng-dblclick="editTodo(todo)">{{todo.title}}</label>
 								<span class="time-stamp">Created Time: {{todo.addedTime | date : 'MMM d, y h:mm:ss a'}}</span>
 								<span class="time-stamp">Completed Time:{{todo.completedTime | date : 'MMM d, y h:mm:ss a'}}</span>
 								<button class="destroy" ng-click="removeTodo(todo)"></button>
